@@ -7,13 +7,21 @@
   <title>게시글 작성</title>
 </head>
 <body>
-<h1>게시글 작성</h1>
-  <form th:action="@{/board/write}" method="post">
-    <label>제목: <input type="text" name="title" required></label><br>
-    <label>작성자: <input type="text" name="writer" required></label><br>
-    <label>내용:<br><textarea name="content" required></textarea></label><br>
+  <h1>새 게시글 작성</h1>
+  <form action="/board/write" method="POST">
+    <div>
+      <label for="title">제목:</label>
+      <input type="text" id="title" name="title" required />
+    </div>
+    <div>
+      <label for="author">작성자:</label>
+      <input type="text" id="author" name="author" required />
+    </div>
+    <div>
+      <label for="content">내용:</label>
+      <textarea id="content" name="content" required></textarea>
+    </div>
     <button type="submit">작성</button>
   </form>
-  <a th:href="@{/board/list}">목록으로</a>
 </body>
 </html>

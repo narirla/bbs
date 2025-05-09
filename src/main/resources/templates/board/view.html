@@ -7,16 +7,13 @@
   <title>게시글 조회</title>
 </head>
 <body>
-  <h1 th:text="${post.title}"></h1>
-  <p><strong>작성자:</strong> <span th:text="${post.writer}"></span></p>
-  <p><strong>작성일:</strong> <span th:text="${#dates.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>
-  <p><strong>내용:</strong></p>
-  <p th:text="${post.content}"></p>
-
-  <a th:href="@{/board/edit/{id}(id=${post.id})}">수정</a> <!-- 수정 페이지로 이동 -->
-  <form th:action="@{/board/delete/{id}(id=${post.id})}" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-    <button type="submit">삭제</button>
-  </form>
-  <a th:href="@{/board/list}">목록으로</a>
+  <h1 th:text="${board.title}">게시글 제목</h1>
+  <p><strong>작성자:</strong> <span th:text="${board.author}">작성자</span></p>
+  <p><strong>작성 날짜:</strong> <span th:text="${#dates.format(board.createdDate, 'yyyy-MM-dd HH:mm')}">작성 날짜</span></p>
+  <div th:text="${board.content}">게시글 내용</div>
+  <div>
+    <a th:href="@{/board/edit/{id}(id=${board.id})}">수정</a> |
+    <a th:href="@{/board/delete/{id}(id=${board.id})}">삭제</a>
+  </div>
 </body>
 </html>
