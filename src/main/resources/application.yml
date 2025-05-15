@@ -10,4 +10,4 @@ spring:
     password: bbs1234
 # 웹서버 포트
 server:
-  port: 9090
+  port: 9080

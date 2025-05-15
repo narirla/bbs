@@ -4,23 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>게시글 작성</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <style>
+    .center-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .form-box {
+      width: 600px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .field-err {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 5px;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <h1>새 게시글 작성</h1>
-  <form th:action="@{/board/create}" method="post" th:object="${board}">
-    <div>
-      <label for="title">제목:</label>
-      <input type="text" th:field="*{title}" required />
-    </div>
-    <div>
-      <label for="author">작성자:</label>
-      <input type="text" th:field="*{author}" required />
-    </div>
-    <div>
-      <label for="content">내용:</label><br>
-      <textarea th:field="*{content}" required></textarea>
-    </div>
-    <button type="submit">등록</button>
-  </form>
+  <h3 style="text-align: center;">게시글 작성</h3>
+
+  <div class="center-container">
+    <form id="frm" class="form-box" th:action="@{/board/create}" method="post" th:object="${saveForm}">
+      <!-- 글로벌 오류 -->
+      <div th:if="${#fields.hasGlobalErrors()}">
+        <p class="field-err" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+      </div>
+
+      <!-- 제목 -->
+      <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" th:field="*{title}">
+        <span class="field-err" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+      </div>
+
+      <!-- 작성자 -->
+      <div>
+        <label for="writer">작성자</label>
+        <input type="text" id="writer" th:field="*{writer}">
+        <span class="field-err" th:if="${#fields.hasErrors('writer')}" th:errors="*{writer}"></span>
+      </div>
+
+      <!-- 내용 -->
+      <div>
+        <label for="content">내용</label>
+        <textarea id="content" rows="5" cols="50" th:field="*{content}"></textarea>
+        <span class="field-err" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="button-group">
+        <button type="submit" id="btnAdd">작성</button>
+        <button type="button" id="btnList" onclick="location.href='/board'">목록</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module" th:src="@{/js/addForm.js}"></script>
 </body>
 </html>

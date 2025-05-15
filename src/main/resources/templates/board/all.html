@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 목록</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <style>
+    /* 가운데 정렬용 컨테이너 */
+    .center-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* 테이블 너비 제한 */
+    table {
+      width: 800px;
+    }
+  </style>
+</head>
+<body>
+  <h3 style="text-align: center;">📋 게시글 목록</h3>
+
+  <!-- ✅ 가운데 정렬 -->
+  <div class="center-container">
+    <form id="frm" th:action="@{/board/delete}" method="post">
+      <table border="1" cellspacing="0" cellpadding="8">
+        <thead>
+        <tr>
+          <th>선택</th>
+          <th>ID</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boards}">
+          <td><input type="checkbox" name="ids" th:value="${board.id}"></td>
+          <td th:text="${board.id}">1</td>
+          <td>
+            <a th:href="@{/board/detail/{id}(id=${board.id})}" th:text="${board.title}">제목</a>
+          </td>
+          <td th:text="${board.writer}">작성자</td>
+          <td th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+
+  <!-- ✅ 버튼도 가운데 정렬 -->
+  <div class="button-group">
+    <button type="button" id="btnAdd">등록</button>
+    <button type="button" id="btnEdit">수정</button>
+    <button type="button" id="btnDel">삭제</button>
+  </div>
+
+  <script type="module" th:src="@{/js/all.js}"></script>
+</body>
+</html>

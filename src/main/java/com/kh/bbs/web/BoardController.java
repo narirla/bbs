@@ -2,89 +2,112 @@ package com.kh.bbs.web;
 
 import com.kh.bbs.domain.entity.Board;
 import com.kh.bbs.svc.BoardSVC;
+import com.kh.bbs.web.form.board.DetailForm;
+import com.kh.bbs.web.form.board.SaveForm;
+import com.kh.bbs.web.form.board.UpdateForm;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@Slf4j
 @Controller
 @RequestMapping("/board")
 @RequiredArgsConstructor
 public class BoardController {
 
-  //BoardSVC 주입
-  final private BoardSVC boardSVC;
+  private final BoardSVC boardSVC;
 
-  // 게시글 목록 화면
-  @GetMapping("/list")
+  /**
+   * 게시글 목록 화면 (/board 또는 /board/list)
+   */
+  @GetMapping({"", "/list"})
   public String list(Model model) {
-    List<Board> boards = boardSVC.findAll();  // 게시글 목록 조회
-    model.addAttribute("boards", boards);  // 모델에 게시글 목록 추가
-    return "board/list";  // 목록 페이지로 이동
+    List<Board> boards = boardSVC.findAll();
+    model.addAttribute("boards", boards);
+    return "board/all"; // ✅ 목록 템플릿: templates/board/all.html
   }
 
-  // 게시글 작성 화면
-  @GetMapping("/addform")
+  /**
+   * 게시글 작성 화면
+   */
+  @GetMapping("/create")
   public String createForm(Model model) {
-    model.addAttribute("board", new Board());  // 새로운 Board 객체 추가
-    return "board/addform";  // 게시글 작성 화면으로 이동
+    model.addAttribute("saveForm", new SaveForm());
+    return "board/addForm";
   }
 
-  // 게시글 등록 처리
+  /**
+   * 게시글 등록 처리
+   */
   @PostMapping("/create")
-  public String create(@ModelAttribute Board board) {
-    boardSVC.save(board);  // 게시글 등록
-    return "redirect:/board/list";  // 목록 페이지로 리다이렉트
-  }
+  public String create(
+      @Valid @ModelAttribute("saveForm") SaveForm saveForm,
+      BindingResult bindingResult,
+      Model model) {
 
-  // 게시글 조회 화면
-  @GetMapping("/{id}")
-  public String view(@PathVariable Long id, Model model) {
-    Optional<Board> board = boardSVC.findById(id);  // 게시글 조회
-    if (board.isPresent()) {
-      model.addAttribute("board", board.get());  // 조회된 게시글을 모델에 추가
-      return "board/view";  // 게시글 조회 화면으로 이동
-    } else {
-      return "redirect:/board/list";  // 게시글이 없으면 목록 페이지로 리다이렉트
+    if (bindingResult.hasErrors()) {
+      return "board/addForm";  // 유효성 오류 시 다시 작성 폼
     }
+
+    boardSVC.saveFromForm(saveForm);
+    return "redirect:/board";
   }
 
-  // 게시글 수정 화면
+
+  /**
+   * 게시글 상세 조회 화면
+   */
+  @GetMapping("/detail/{id}")
+  public String detail(@PathVariable Long id, Model model) {
+    DetailForm form = new DetailForm();
+    form.setId(id);
+    model.addAttribute("board", boardSVC.findDetailById(form));
+    return "board/detail";
+  }
+
+  /**
+   * 게시글 수정 화면
+   */
   @GetMapping("/edit/{id}")
   public String editForm(@PathVariable Long id, Model model) {
-    Optional<Board> board = boardSVC.findById(id);  // 게시글 조회
-    if (board.isPresent()) {
-      model.addAttribute("board", board.get());  // 게시글을 모델에 추가
-      return "board/edit";  // 게시글 수정 화면으로 이동
-    } else {
-      return "redirect:/board/list";  // 게시글이 없으면 목록 페이지로 리다이렉트
+    UpdateForm updateForm = boardSVC.getUpdateFormById(id);
+    model.addAttribute("updateForm", updateForm);
+    return "board/edit";
+  }
+
+  /**
+   * 게시글 수정 처리
+   */
+  @PostMapping("/edit")
+  public String edit(
+      @Valid @ModelAttribute("updateForm") UpdateForm updateForm,
+      BindingResult bindingResult) {
+
+    if (bindingResult.hasErrors()) {
+      return "board/edit"; // 유효성 실패 시 수정 폼 다시 보여줌
     }
+
+    boardSVC.updateFromForm(updateForm);
+    return "redirect:/board";
   }
 
-  // 게시글 수정 처리
-  @PostMapping("/edit/{id}")
-  public String edit(@PathVariable Long id, @ModelAttribute Board board) {
-    boardSVC.update(id, board);  // 게시글 수정
-    return "redirect:/board/" + id;  // 수정된 게시글 상세 페이지로 리다이렉트
+
+  /**
+   * 게시글 다중 삭제 처리
+   */
+  @PostMapping("/delete")
+  public String delete(@RequestParam("ids") List<Long> ids) {
+    boardSVC.deleteBoards(ids);
+    return "redirect:/board"; // ✅ 삭제 후 목록으로 이동
   }
 
-  // 게시글 삭제(단건)
-  @PostMapping("/delete/{id}")
-  public String delete(@PathVariable Long id) {
-    boardSVC.deleteId(id);  // 게시글 삭제
-    return "redirect:/board/list";  // 목록 페이지로 리다이렉트
+  @GetMapping("/delete/{id}")
+  public String deleteById(@PathVariable Long id) {
+    boardSVC.deleteBoards(List.of(id));
+    return "redirect:/board";
   }
-
-  // 게시글 삭제(여러건)
-  @PostMapping("/delete/ids")
-  public String deleteMultiple(@RequestParam List<Long> ids) {
-    boardSVC.deleteIds(ids);  // 여러 게시글 삭제
-    return "redirect:/board/list";  // 목록 페이지로 리다이렉트
-  }
-
 }

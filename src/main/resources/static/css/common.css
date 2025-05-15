@@ -1,0 +1,161 @@
+/* 기본 설정 */
+body {
+  font-family: 'Segoe UI', '맑은 고딕', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 20px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+h1, h3 {
+  color: #2c3e50;
+  margin-bottom: 1em;
+}
+
+/* 테이블 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  margin-bottom: 1.5em;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+/* 입력 요소 */
+form {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form > div {
+  margin-bottom: 15px;
+}
+
+label {
+  display: inline-block;
+  width: 100px;
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+  width: 60%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* 버튼 */
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 3px;
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button[type="button"] {
+  background-color: #95a5a6;
+}
+
+button[type="button"]:hover {
+  background-color: #7f8c8d;
+}
+
+/* 에러 메시지 */
+.global-err {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.field-err {
+  display: block;
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+/* 링크 */
+a {
+  text-decoration: none;
+  color: #2980b9;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 모달(dialog) */
+dialog {
+  border: none;
+  border-radius: 5px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+dialog p {
+  margin-bottom: 20px;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+dialog button {
+  margin: 0 10px;
+}
+/* 가운데 정렬 컨테이너 */
+.center-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* 가운데 정렬 + column 방향 */
+.center-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+/* 버튼 그룹 가운데 정렬 */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* 버튼 크기와 정렬 향상 */
+button {
+  padding: 10px 20px;
+  font-size: 15px;
+  min-width: 80px;
+}
