@@ -1,5 +1,6 @@
 package com.kh.bbs.dao;
 
+import com.kh.bbs.dao.board.BoardDAO;
 import com.kh.bbs.domain.entity.Board;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;

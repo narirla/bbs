@@ -1,7 +1,7 @@
 package com.kh.bbs.web;
 
 import com.kh.bbs.domain.entity.Board;
-import com.kh.bbs.svc.BoardSVC;
+import com.kh.bbs.svc.board.BoardSVC;
 import com.kh.bbs.web.form.board.DetailForm;
 import com.kh.bbs.web.form.board.SaveForm;
 import com.kh.bbs.web.form.board.UpdateForm;

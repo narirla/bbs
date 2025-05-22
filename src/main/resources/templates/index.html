@@ -3,17 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판 홈</title>
+    <title>홈</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
-    <link rel="stylesheet" th:href="@{/css/boardmain.css}">
 </head>
 <body>
     <div class="main-container">
-        <h3> 게시판 메인 </h3>
+        <h2>📌 커뮤니티 게시판</h2>
 
-        <ul>
-            <li><a th:href="@{/board/list}">📄 게시글 목록 </a></li>
-        </ul>
+        <!-- 로그인 상태 -->
+        <div th:if="${session.loginMember != null}">
+            <p>
+                <strong th:text="${session.loginMember.nickname}">닉네임</strong>님 환영합니다!
+            </p>
+            <a th:href="@{/board/list}">📄 게시글 목록</a>
+            <a th:href="@{/logout}">🔓 로그아웃</a>
+        </div>
+
+        <!-- 비로그인 상태 -->
+        <div th:unless="${session.loginMember != null}">
+            <p>환영합니다. 아래 버튼을 통해 이용해 주세요.</p>
+            <!-- 수정된 버튼 -->
+            <button onclick="location.href='/member/login'">🔐 로그인</button>
+            <button onclick="location.href='/member/join'">📝 회원가입</button>
+        </div>
     </div>
+
+    <script type="module" th:src="@{/js/index.js}"></script>
 </body>
 </html>

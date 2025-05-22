@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+    <h1>로그인</h1>
+    <form th:action="@{/member/login}" th:object="${loginForm}" method="post">
+        <div>
+            <label for="email">이메일</label>
+            <input type="text" id="email" th:field="*{email}">
+            <span th:errors="*{email}" class="field-error"></span>
+        </div>
+
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" th:field="*{password}">
+            <span th:errors="*{password}" class="field-error"></span>
+        </div>
+
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <div>
+            <button type="submit">로그인</button>
+        </div>
+    </form>
+</body>
+</html>

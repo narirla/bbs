@@ -1,4 +1,4 @@
-package com.kh.bbs.dao;
+package com.kh.bbs.dao.board;
 
 import com.kh.bbs.domain.entity.Board;
 import lombok.RequiredArgsConstructor;

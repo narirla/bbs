@@ -1,4 +1,4 @@
-package com.kh.bbs.svc;
+package com.kh.bbs.svc.board;
 
 import com.kh.bbs.domain.entity.Board;
 import com.kh.bbs.web.form.board.SaveForm;
