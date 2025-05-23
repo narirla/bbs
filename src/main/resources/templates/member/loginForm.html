@@ -1,32 +1,46 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org" >
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>로그인</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
 </head>
 <body>
-    <h1>로그인</h1>
-    <form th:action="@{/member/login}" th:object="${loginForm}" method="post">
-        <div>
-            <label for="email">이메일</label>
-            <input type="text" id="email" th:field="*{email}">
-            <span th:errors="*{email}" class="field-error"></span>
-        </div>
+    <div class="fullscreen-container">
+        <div class="form-container">
+            <h2>로그인</h2>
 
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}">
-            <span th:errors="*{password}" class="field-error"></span>
-        </div>
+            <form th:action="@{/member/login}" method="post" th:object="${loginForm}">
 
-        <div th:if="${#fields.hasGlobalErrors()}">
-            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
-        </div>
+                <!-- 이메일 -->
+                <div class="input-group">
+                    <div class="input-row">
+                        <label for="email">이메일</label>
+                        <input type="text" id="email" th:field="*{email}" placeholder="이메일 입력" />
+                    </div>
+                    <span class="field-err" th:each="err : ${#fields.errors('email')}" th:text="${err}"></span>
+                </div>
 
-        <div>
-            <button type="submit">로그인</button>
+                <!-- 비밀번호 -->
+                <div class="input-group">
+                    <div class="input-row">
+                        <label for="password">비밀번호</label>
+                        <input type="password" id="password" th:field="*{password}" placeholder="비밀번호 입력" />
+                    </div>
+                    <span class="field-err" th:each="err : ${#fields.errors('password')}" th:text="${err}"></span>
+                </div>
+
+                <!-- 글로벌 에러 (예: 이메일 또는 비밀번호 불일치) -->
+                <div th:if="${#fields.hasGlobalErrors()}">
+                    <span class="field-err global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></span>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="cool-button">로그인</button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </body>
 </html>

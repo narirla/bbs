@@ -1,0 +1,97 @@
+/* 전체 배경 및 정렬 설정 */
+body {
+  font-family: 'Segoe UI', '맑은 고딕', sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;         /* 위쪽 정렬로 변경 */
+}
+
+/* 제목 */
+.form-title {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 28px;
+  color: #1e3a8a;
+}
+
+/* 폼 전체 레이아웃 */
+.form-wrapper {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.07);
+  width: 100%;
+  max-width: 700px;                /* ✅ 더 넓은 폼 */
+  margin: 60px auto;
+  text-align: left;
+}
+
+/* 필드 정렬 */
+.form-group {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+/* 라벨 크기 축소 */
+.form-group label {
+  width: 100px;                     /* ✅ 더 좁게 */
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 14px;
+  flex-shrink: 0;
+}
+
+/* 입력창 및 텍스트 박스 */
+.form-group input,
+.form-group textarea {
+  flex: 1;
+  width: 70%;
+  padding: 16px 20px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+/* 텍스트 영역 크기 확장 */
+textarea {
+  min-height: 300px;
+  width: 100%;
+}
+
+/* 에러 메시지 */
+.field-err {
+  display: block;
+  color: red;
+  font-size: 0.85em;
+  margin-left: 100px;
+  margin-top: 6px;
+  text-align: left;
+}
+
+.field-err.global {
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* 버튼 정렬 */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+/* 버튼 스타일 */
+.button-group button {
+  padding: 12px 32px;
+  font-size: 16px;
+  border-radius: 8px;
+}

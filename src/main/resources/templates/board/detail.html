@@ -5,59 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>게시글 상세</title>
   <link rel="stylesheet" th:href="@{/css/common.css}">
-  <style>
-    .center-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 40px;
-    }
-
-    .form-box {
-      width: 600px;
-    }
-
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/detail.css}">
 </head>
 <body>
-  <h3 style="text-align: center;">게시글 상세</h3>
+  <div class="form-wrapper">
+    <h3 class="form-title">게시글 상세</h3>
 
-  <!-- ✅ 가운데 정렬 컨테이너로 감싸기 -->
-  <div class="center-container">
-    <form class="form-box" th:object="${board}">
+    <form th:object="${board}">
       <input type="hidden" id="boardId" th:value="*{id}"/>
 
-      <div>
+      <div class="form-group">
         <label>게시글 ID</label>
         <input type="text" th:value="*{id}" readonly>
       </div>
-      <div>
+
+      <div class="form-group">
         <label>제목</label>
         <input type="text" th:value="*{title}" readonly>
       </div>
-      <div>
+
+      <div class="form-group">
         <label>작성자</label>
         <input type="text" th:value="*{writer}" readonly>
       </div>
-      <div>
+
+      <div class="form-group">
         <label>내용</label>
-        <textarea rows="5" cols="50" readonly th:text="*{content}"></textarea>
+        <textarea readonly th:text="*{content}"></textarea>
       </div>
-      <div>
+
+      <div class="form-group">
         <label>작성일</label>
         <input type="text" th:value="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:mm')}" readonly>
       </div>
-      <div>
+
+      <div class="form-group">
         <label>수정일</label>
         <input type="text" th:value="${#dates.format(board.updatedAt, 'yyyy-MM-dd HH:mm')}" readonly>
       </div>
 
-      <!-- ✅ 버튼도 가운데 정렬 -->
       <div class="button-group">
         <button type="button" id="btnEdit">수정</button>
         <button type="button" id="btnDelete">삭제</button>
@@ -66,7 +52,6 @@
     </form>
   </div>
 
-  <!-- 삭제 모달 -->
   <dialog id="modalDel">
     <p>게시글을 삭제하시겠습니까?</p>
     <button class="btnYes">예</button>

@@ -22,6 +22,15 @@ public interface CommentSVC {
   List<Comment> findByBoardId(Long boardId);
 
   /**
+   * 특정 게시글의 댓글 목록 조회 (페이징)
+   * @param boardId 게시글 ID
+   * @param page 현재 페이지
+   * @param size 페이지당 항목 수
+   * @return 댓글 목록
+   */
+  List<Comment> findByBoardId(Long boardId, int page, int size);
+
+  /**
    * 댓글 단건 조회
    * @param id 댓글 ID
    * @return Optional<Comment>
@@ -43,4 +52,10 @@ public interface CommentSVC {
    */
   int delete(Long id);
 
+  /**
+   * 댓글 총 개수
+   * @param boardId 게시글 ID
+   * @return 댓글 수
+   */
+  int totalCountByBoardId(Long boardId);
 }

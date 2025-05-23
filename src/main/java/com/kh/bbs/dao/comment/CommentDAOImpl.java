@@ -74,6 +74,51 @@ public class CommentDAOImpl implements CommentDAO {
   }
 
   /**
+   * 특정 게시글의 댓글 목록 조회 (페이징)
+   * @param boardId 게시글 ID
+   * @param startRow 시작 행 번호
+   * @param endRow 끝 행 번호
+   * @return 댓글 목록
+   */
+  @Override
+  public List<Comment> findByBoardId(Long boardId, int startRow, int endRow) {
+    StringBuffer sql = new StringBuffer();
+    sql.append("SELECT * FROM ( ");
+    sql.append("  SELECT ROWNUM rnum, a.* FROM ( ");
+    sql.append("    SELECT id, board_id, commenter_id, content, created_at, updated_at ");
+    sql.append("      FROM comments ");
+    sql.append("     WHERE board_id = :boardId ");
+    sql.append("     ORDER BY id DESC ");
+    sql.append("  ) a WHERE ROWNUM <= :endRow ");
+    sql.append(") WHERE rnum >= :startRow ");
+
+
+    Map<String, Object> param = Map.of(
+        "boardId", boardId,
+        "startRow", startRow,
+        "endRow", endRow
+    );
+
+    return template.query(sql.toString(), param, commentRowMapper());
+  }
+
+  /**
+   * 특정 게시글의 총 댓글 수 조회
+   * @param boardId 게시글 ID
+   * @return 댓글 수
+   */
+  @Override
+  public int totalCountByBoardId(Long boardId) {
+    StringBuffer sql = new StringBuffer();
+    sql.append("SELECT COUNT(*) ");
+    sql.append("  FROM comments ");
+    sql.append(" WHERE board_id = :boardId ");
+
+    return template.queryForObject(sql.toString(), Map.of("boardId", boardId), Integer.class);
+  }
+
+
+  /**
    * 댓글 단건 조회
    * @param id 댓글 ID
    * @return Optional<Comment>

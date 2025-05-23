@@ -7,27 +7,28 @@
     <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-    <div class="main-container">
-        <h2>📌 커뮤니티 게시판</h2>
+    <div class="fullscreen-container">
+        <div class="main-card home-card">
+            <h2>📌 <span class="highlight">커뮤니티 게시판</span></h2>
 
-        <!-- 로그인 상태 -->
-        <div th:if="${session.loginMember != null}">
-            <p>
-                <strong th:text="${session.loginMember.nickname}">닉네임</strong>님 환영합니다!
-            </p>
-            <a th:href="@{/board/list}">📄 게시글 목록</a>
-            <a th:href="@{/logout}">🔓 로그아웃</a>
-        </div>
+            <!-- 로그인 상태 -->
+            <div th:if="${session.loginMember != null}">
+                <p><strong th:text="${session.loginMember.nickname}">닉네임</strong>님 환영합니다!</p>
+                <div class="button-group">
+                    <a th:href="@{/board/list}" class="cool-button"> 게시글 목록</a>
+                    <a th:href="@{/member/logout}" class="cool-button outline"> 로그아웃</a>
+                </div>
+            </div>
 
-        <!-- 비로그인 상태 -->
-        <div th:unless="${session.loginMember != null}">
-            <p>환영합니다. 아래 버튼을 통해 이용해 주세요.</p>
-            <!-- 수정된 버튼 -->
-            <button onclick="location.href='/member/login'">🔐 로그인</button>
-            <button onclick="location.href='/member/join'">📝 회원가입</button>
+            <!-- 비로그인 상태 -->
+            <div th:unless="${session.loginMember != null}">
+                <p>환영합니다. 아래 버튼을 통해 이용해 주세요.</p>
+                <div class="button-group">
+                    <a href="/member/login" class="cool-button"> 로그인</a>
+                    <a href="/member/join" class="cool-button outline"> 회원가입</a>
+                </div>
+            </div>
         </div>
     </div>
-
-    <script type="module" th:src="@{/js/index.js}"></script>
 </body>
 </html>

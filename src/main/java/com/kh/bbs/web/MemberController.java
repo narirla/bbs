@@ -37,18 +37,24 @@ public class MemberController {
   @PostMapping("/join")
   public String join(
       @Valid @ModelAttribute JoinForm joinForm,
-      BindingResult bindingResult){
+      BindingResult bindingResult) {
+
     // 이메일 중복 체크
-    if (memberSVC.existsByEmail(joinForm.getEmail())){
-      bindingResult.rejectValue("email","duplicate","이미 사용 중인 이메일입니다.");
+    if (memberSVC.existsByEmail(joinForm.getEmail())) {
+      bindingResult.rejectValue("email", "duplicate", "이미 사용 중인 이메일입니다.");
     }
 
-    //유효성 실패
-    if (bindingResult.hasErrors()){
+    // 비밀번호와 비밀번호 확인이 다를 때
+    if (!joinForm.getPassword().equals(joinForm.getConfirmPassword())) {
+      bindingResult.rejectValue("confirmPassword", "mismatch", "비밀번호가 일치하지 않습니다.");
+    }
+
+    // 유효성 실패 시
+    if (bindingResult.hasErrors()) {
       return "member/joinForm";
     }
 
-    //등록
+    // 등록
     Member member = new Member();
     member.setEmail(joinForm.getEmail());
     member.setPassword(joinForm.getPassword());

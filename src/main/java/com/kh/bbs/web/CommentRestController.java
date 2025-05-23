@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -31,6 +32,27 @@ public class CommentRestController {
     List<Comment> comments = commentSVC.findByBoardId(boardId);
     return ResponseEntity.ok(comments);
   }
+
+  // 페이징 댓글 목록 조회
+  @GetMapping("/board/{boardId}/pages")
+  public ResponseEntity<?> findByBoardIdPaged(
+      @PathVariable Long boardId,
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "10") int size
+  ) {
+    List<Comment> comments = commentSVC.findByBoardId(boardId, page, size);
+    int totalCount = commentSVC.totalCountByBoardId(boardId);
+    int totalPages = (int) Math.ceil((double) totalCount / size);
+
+    return ResponseEntity.ok(
+        Map.of(
+            "comments", comments,
+            "page", page,
+            "totalPages", totalPages
+        )
+    );
+  }
+
 
   //댓글 단건 조회
   @GetMapping("/{id}")
