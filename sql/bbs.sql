@@ -65,6 +65,15 @@ SELECT column_name, data_type, data_length, nullable, data_default
 FROM user_tab_columns
 WHERE table_name = 'BOARD';
 
+-- writer_id 컬럼 추가
+ALTER TABLE board ADD writer_id NUMBER;
+
+-- 외래키 제약조건 추가
+ALTER TABLE board
+  ADD CONSTRAINT fk_board_writer
+  FOREIGN KEY (writer_id)
+  REFERENCES member(id);
+
 -- MEMBER 테이블
 CREATE TABLE member (
   id           NUMBER PRIMARY KEY,

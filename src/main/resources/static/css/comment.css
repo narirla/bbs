@@ -1,0 +1,82 @@
+/* 댓글 전체 영역 */
+.comment-write,
+.comment-list {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+}
+
+/* 댓글 작성 폼 */
+#commentForm textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  resize: vertical;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#commentForm button {
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#commentForm button:hover {
+  background-color: #0056b3;
+}
+
+/* 댓글 항목 */
+.comment-item {
+  border-bottom: 1px solid #eee;
+  padding: 0.75rem 0;
+}
+
+.comment-item p {
+  margin: 0 0 0.3rem 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.comment-item small {
+  display: block;
+  color: #888;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 버튼들 */
+.comment-item button {
+  margin-right: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 수정 버튼 */
+.comment-item .btn-edit {
+  background-color: #ffc107;
+  color: black;
+}
+
+.comment-item .btn-edit:hover {
+  background-color: #e0a800;
+}
+
+/* 삭제 버튼 */
+.comment-item .btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.comment-item .btn-delete:hover {
+  background-color: #c82333;
+}

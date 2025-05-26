@@ -12,4 +12,6 @@ public class Comment {
   private String content;         // 댓글 내용
   private LocalDateTime createdAt; // 작성일
   private LocalDateTime updatedAt; // 수정일
+
+  private String writer;
 }
