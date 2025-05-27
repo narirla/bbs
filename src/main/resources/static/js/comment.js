@@ -3,27 +3,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const $form = document.getElementById('commentForm');
   const $content = document.getElementById('commentContent');
   const $list = document.getElementById('commentList');
+  const $pagination = document.getElementById('commentPagination');
+
+  let currentPage = 1;
+  const commentsPerPage = 10;
 
   // 댓글 목록 가져오기
-  async function loadComments() {
+  async function loadComments(page = 1) {
     try {
-      const res = await fetch(`/api/comments/board/${boardId}`);
+      const res = await fetch(`/api/comments/board/${boardId}/pages?page=${page}`);
       if (!res.ok) throw new Error('댓글 조회 실패');
 
-      const comments = await res.json();
-      $list.innerHTML = ''; // 초기화
+      const { comments, totalPages } = await res.json();  // 서버는 comments, totalPages를 포함해야 함
+      currentPage = page;
+      $list.innerHTML = '';
+      $pagination.innerHTML = '';
 
       if (comments.length === 0) {
         $list.innerHTML = '<p>댓글이 없습니다.</p>';
         return;
       }
 
-      comments.forEach(comment => {
+      comments.forEach((comment, index) => {
         const div = document.createElement('div');
         div.classList.add('comment-item');
 
         const p = document.createElement('p');
-        p.innerText = comment.content;
+        p.innerHTML = `<strong>${comment.nickname}</strong>: ${comment.content}`;
+
 
         const small = document.createElement('small');
         small.innerText = comment.createdAt?.replace('T', ' ').substring(0, 16) || '';
@@ -31,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.appendChild(p);
         div.appendChild(small);
 
-        // 🔐 작성자 본인에게만 수정/삭제 버튼 표시
+
         if (comment.mine) {
           const editBtn = document.createElement('button');
           editBtn.innerText = '수정';
@@ -48,6 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         $list.appendChild(div);
       });
+
+      // 페이징 버튼 생성
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        if (i === page) btn.disabled = true;
+        btn.addEventListener('click', () => loadComments(i));
+        $pagination.appendChild(btn);
+      }
+
     } catch (err) {
       console.error('댓글 불러오기 오류:', err.message);
     }
@@ -73,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (res.ok) {
         $content.value = '';
-        loadComments();
+        loadComments(1);  // 등록 후 1페이지로 이동
       } else if (res.status === 401) {
         alert('로그인이 필요합니다!');
         location.href = '/login';
@@ -95,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (res.ok) {
-        loadComments();
+        loadComments(currentPage);
       } else if (res.status === 403) {
         alert('삭제 권한이 없습니다.');
       } else {
@@ -121,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (res.ok) {
-        loadComments();
+        loadComments(currentPage);
       } else if (res.status === 403) {
         alert('수정 권한이 없습니다.');
       } else {

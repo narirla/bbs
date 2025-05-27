@@ -11,4 +11,6 @@ public class CommentRes {
   private String content;
   private LocalDateTime createdAt;
   private boolean mine; // 현재 로그인 사용자의 댓글 여부
+  private String nickname;  // 작성자 닉네임
+
 }

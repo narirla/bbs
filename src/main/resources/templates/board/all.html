@@ -5,9 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>게시글 목록</title>
   <link rel="stylesheet" th:href="@{/css/common.css}">
-  <link rel="stylesheet" th:href="@{/css/boardlist.css}">
+  <link rel="stylesheet" th:href="@{/css/all.css}">
 </head>
 <body>
+  <!-- ✅ 로그인 사용자 정보 + 로그아웃 -->
+  <div class="welcome-box" th:if="${session.loginMember != null}">
+    <p>
+      <strong th:text="${session.loginMember.nickname}">닉네임</strong>님 환영합니다!
+      <a th:href="@{/member/logout}" class="logout-center-btn">로그아웃</a>
+      <a href="/" class="logout-center-btn">🏠 </a>  <!-- 홈 추가 -->
+    </p>
+  </div>
+
   <div class="wrapper">
     <h3> 게시글 목록</h3>
 

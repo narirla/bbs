@@ -14,4 +14,6 @@ public class Comment {
   private LocalDateTime updatedAt; // 수정일
 
   private String writer;
+  private String nickname; // 작성자 닉네임
+
 }

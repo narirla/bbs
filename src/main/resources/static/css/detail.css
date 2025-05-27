@@ -1,3 +1,4 @@
+/*detail.css*/
 .form-title {
   text-align: center;
   margin-top: 60px;
@@ -54,4 +55,114 @@ textarea {
   padding: 12px 32px;
   font-size: 16px;
   border-radius: 8px;
+}
+/* 댓글 작성 섹션 */
+.comment-write {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.comment-write h4 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: #1e3a8a;
+}
+
+.comment-write textarea {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.comment-write button {
+  margin-top: 12px;
+  padding: 10px 24px;
+  background-color: #1e3a8a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.comment-write button:hover {
+  background-color: #274baf;
+}
+
+/* 댓글 목록 섹션 */
+.comment-list {
+  margin-top: 40px;
+}
+
+.comment-list h4 {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #1e3a8a;
+}
+
+.comment-item {
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #f9fafb;
+}
+
+.comment-item p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.comment-item small {
+  display: block;
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* 댓글 버튼 */
+.comment-item button {
+  margin-top: 10px;
+  margin-right: 8px;
+  padding: 6px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #e5e7eb;
+}
+
+.comment-item .btn-edit:hover {
+  background-color: #c6f6d5;
+}
+
+.comment-item .btn-delete:hover {
+  background-color: #feb2b2;
+}
+
+/* 페이징 */
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination button {
+  margin: 0 6px;
+  padding: 6px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: default;
 }

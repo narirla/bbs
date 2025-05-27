@@ -32,6 +32,7 @@ public class CommentDAOImpl implements CommentDAO {
       if (rs.getTimestamp("updated_at") != null) {
         comment.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
       }
+      comment.setNickname(rs.getString("nickname"));
       return comment;
     };
   }
@@ -65,10 +66,11 @@ public class CommentDAOImpl implements CommentDAO {
   @Override
   public List<Comment> findByBoardId(Long boardId) {
     StringBuffer sql = new StringBuffer();
-    sql.append("SELECT id, board_id, commenter_id, content, created_at, updated_at ");
-    sql.append("  FROM comments ");
-    sql.append(" WHERE board_id = :boardId ");
-    sql.append(" ORDER BY id ASC ");
+    sql.append("SELECT c.id, c.board_id, c.commenter_id, c.content, c.created_at, c.updated_at, m.nickname ");
+    sql.append("  FROM comments c ");
+    sql.append(" INNER JOIN member m ON c.commenter_id = m.id ");
+    sql.append(" WHERE c.board_id = :boardId ");
+    sql.append(" ORDER BY c.id ASC ");
 
     return template.query(sql.toString(), Map.of("boardId",boardId),commentRowMapper());
   }
@@ -85,13 +87,13 @@ public class CommentDAOImpl implements CommentDAO {
     StringBuffer sql = new StringBuffer();
     sql.append("SELECT * FROM ( ");
     sql.append("  SELECT ROWNUM rnum, a.* FROM ( ");
-    sql.append("    SELECT id, board_id, commenter_id, content, created_at, updated_at ");
-    sql.append("      FROM comments ");
-    sql.append("     WHERE board_id = :boardId ");
-    sql.append("     ORDER BY id DESC ");
+    sql.append("    SELECT c.id, c.board_id, c.commenter_id, c.content, c.created_at, c.updated_at, m.nickname ");
+    sql.append("      FROM comments c ");
+    sql.append("     INNER JOIN member m ON c.commenter_id = m.id ");
+    sql.append("     WHERE c.board_id = :boardId ");
+    sql.append("     ORDER BY c.id DESC ");
     sql.append("  ) a WHERE ROWNUM <= :endRow ");
     sql.append(") WHERE rnum >= :startRow ");
-
 
     Map<String, Object> param = Map.of(
         "boardId", boardId,
@@ -126,13 +128,15 @@ public class CommentDAOImpl implements CommentDAO {
   @Override
   public Optional<Comment> findById(Long id) {
     StringBuffer sql = new StringBuffer();
-    sql.append("SELECT id, board_id, commenter_id, content, created_at, updated_at ");
-    sql.append("  FROM comments ");
-    sql.append(" WHERE id = :id ");
+    sql.append("SELECT c.id, c.board_id, c.commenter_id, c.content, c.created_at, c.updated_at, m.nickname ");
+    sql.append("  FROM comments c ");
+    sql.append("  INNER JOIN member m ON c.commenter_id = m.id ");
+    sql.append(" WHERE c.id = :id ");
 
-    List<Comment> result = template.query(sql.toString(),Map.of("id",id),commentRowMapper());
+    List<Comment> result = template.query(sql.toString(), Map.of("id", id), commentRowMapper());
     return result.stream().findFirst();
   }
+
 
   /**
    * 댓글 수정

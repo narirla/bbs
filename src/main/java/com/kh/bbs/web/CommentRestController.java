@@ -66,6 +66,7 @@ public class CommentRestController {
             mine = loginMemberId.equals(c.getCommenterId());
           }
           dto.setMine(mine);
+          dto.setNickname(c.getNickname());
 
           return dto;
         })
@@ -80,27 +81,70 @@ public class CommentRestController {
   public ResponseEntity<?> findByBoardIdPaged(
       @PathVariable Long boardId,
       @RequestParam(defaultValue = "1") int page,
-      @RequestParam(defaultValue = "10") int size
+      @RequestParam(defaultValue = "10") int size,
+      HttpSession session
   ) {
     List<Comment> comments = commentSVC.findByBoardId(boardId, page, size);
     int totalCount = commentSVC.totalCountByBoardId(boardId);
     int totalPages = (int) Math.ceil((double) totalCount / size);
 
+    // ✅ 로그인 사용자 ID 명확히 가져오기 (Java 8~17 안전버전)
+    Long loginMemberIdTemp = null;
+    Object loginMember = session.getAttribute("loginMember");
+    if (loginMember != null && loginMember instanceof Member) {
+      loginMemberIdTemp = ((Member) loginMember).getId();
+    }
+    final Long loginMemberId = loginMemberIdTemp;
+
+    List<CommentRes> response = comments.stream()
+        .map(c -> {
+          CommentRes dto = new CommentRes();
+          dto.setId(c.getId());
+          dto.setBoardId(c.getBoardId());
+          dto.setContent(c.getContent());
+          dto.setCreatedAt(c.getCreatedAt());
+          dto.setNickname(c.getNickname());
+          dto.setMine(loginMemberId != null && loginMemberId.equals(c.getCommenterId()));
+          return dto;
+        })
+        .toList();
+
     return ResponseEntity.ok(
         Map.of(
-            "comments", comments,
+            "comments", response,
             "page", page,
             "totalPages", totalPages
         )
     );
   }
 
+
   // 댓글 단건 조회
   @GetMapping("/{id}")
-  public ResponseEntity<Comment> findById(@PathVariable Long id){
+  public ResponseEntity<CommentRes> findById(@PathVariable Long id, HttpSession session) {
     Optional<Comment> optionalComment = commentSVC.findById(id);
-    return optionalComment.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    if (optionalComment.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    Comment comment = optionalComment.get();
+    Long sessionLoginId = null;
+    Object loginMember = session.getAttribute("loginMember");
+    if (loginMember instanceof Member member) {
+      sessionLoginId = member.getId();
+    }
+
+    CommentRes res = new CommentRes();
+    res.setId(comment.getId());
+    res.setBoardId(comment.getBoardId());
+    res.setContent(comment.getContent());
+    res.setCreatedAt(comment.getCreatedAt());
+    res.setMine(sessionLoginId != null && sessionLoginId.equals(comment.getCommenterId()));
+    res.setNickname(comment.getNickname()); // ✍ 작성자 닉네임 포함
+
+    return ResponseEntity.ok(res);
   }
+
 
   // 댓글 수정
   @PutMapping("/{id}")
@@ -121,13 +165,16 @@ public class CommentRestController {
 
     Comment savedComment = optionalComment.get();
     Long loginMemberId = ((Member) loginMember).getId();
-    if (!loginMemberId.equals(savedComment.getCommenterId())) {
+
+    // ✅ null-safe 비교
+    if (savedComment.getCommenterId() == null || !loginMemberId.equals(savedComment.getCommenterId())) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     int updateRow = commentSVC.update(id, comment.getContent());
     return ResponseEntity.ok(updateRow);
   }
+
 
   // 댓글 삭제
   @DeleteMapping("/{id}")
@@ -144,11 +191,14 @@ public class CommentRestController {
 
     Comment savedComment = optionalComment.get();
     Long loginMemberId = ((Member) loginMember).getId();
-    if (!loginMemberId.equals(savedComment.getCommenterId())) {
+
+    // ✅ null-safe 비교
+    if (savedComment.getCommenterId() == null || !loginMemberId.equals(savedComment.getCommenterId())) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     int deleteRow = commentSVC.delete(id);
     return ResponseEntity.ok(deleteRow);
   }
+
 }
