@@ -31,12 +31,17 @@ public class CommentRestController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 401
     }
 
-    // 작성자 ID 설정
     comment.setCommenterId(((Member) loginMember).getId());
 
-    Long generatedId = commentSVC.save(comment);
-    return ResponseEntity.ok(generatedId);
+    try {
+      Long generatedId = commentSVC.save(comment);
+      return ResponseEntity.ok(generatedId);
+    } catch (Exception e) {
+      log.error("❗댓글 등록 중 예외 발생: {}", e.getMessage(), e);  // 로그 찍기!
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
   }
+
 
   // 댓글 목록 조회 (mine 포함)
   @GetMapping("/board/{boardId}")

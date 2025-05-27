@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,9 +36,9 @@ public class BoardDAOImpl implements BoardDAO {
   @Override
   public Long save(Board board) {
     String sql = """
-      INSERT INTO board (id, title, content, writer, created_at, updated_at)
-      VALUES (board_seq.nextval, :title, :content, :writer, :createdAt, :updatedAt)
-    """;
+    INSERT INTO board (title, content, writer, created_at, updated_at)
+    VALUES (:title, :content, :writer, :createdAt, :updatedAt)
+  """;
 
     MapSqlParameterSource param = new MapSqlParameterSource()
         .addValue("title", board.getTitle())
@@ -49,12 +47,14 @@ public class BoardDAOImpl implements BoardDAO {
         .addValue("createdAt", board.getCreatedAt())
         .addValue("updatedAt", board.getUpdatedAt());
 
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-    template.update(sql, param, keyHolder, new String[]{"id"});
+    template.update(sql, param);
 
-    Number key = keyHolder.getKey();
-    return (key != null) ? key.longValue() : null;
+    // 트리거를 통해 ID가 들어갔기 때문에 직접 조회해야 함 (선택 사항)
+    // 예: SELECT board_seq.currval FROM dual; (주의: 같은 세션에서만 유효)
+
+    return null; // 또는 ID를 다시 조회해서 리턴 가능
   }
+
 
   // 게시글 목록 조회
   @Override

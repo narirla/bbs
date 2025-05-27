@@ -156,3 +156,55 @@ SELECT c.id AS comment_id, c.board_id, c.content, m.nickname AS commenter,
 	FROM comments c JOIN member m ON c.commenter_id = m.id
 	WHERE c.board_id = 1
 ORDER BY c.id;
+
+-----------------------------------------
+--sql데이터 베이스에서 실행하기
+-----------------------------------------
+-- 댓글 → 게시글 → 회원 순으로 삭제
+DELETE FROM comments;
+DELETE FROM board;
+DELETE FROM member;
+COMMIT;
+
+-- 시퀀스 삭제
+DROP SEQUENCE comments_seq;
+DROP SEQUENCE board_seq;
+DROP SEQUENCE member_seq;
+
+-- 시퀀스 재생성
+CREATE SEQUENCE member_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE board_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE comments_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+SELECT board_seq.NEXTVAL FROM dual; -- 1이 나와야 정상
+
+-- 회원 추가
+INSERT INTO member (email, password, nickname) VALUES ('tester@kh.com', '1234', '테스터');
+COMMIT;
+
+-- 게시글 등록 (트리거에서 board_seq.NEXTVAL 자동 할당)
+INSERT INTO board (title, content, writer, writer_id)
+VALUES ('초기화 후 첫 글', '내용입니다', '테스터', 1);
+COMMIT;
+
+-- 결과 확인
+SELECT * FROM board;
+
+-- 다음 게시글
+INSERT INTO board (title, content, writer, writer_id)
+VALUES ('두 번째 글', '두 번째 내용입니다', '테스터', 1);
+COMMIT;
+
+-- 결과 확인
+SELECT * FROM board;
+
+-- 다음에 생성될 ID를 확인
+SELECT board_seq.NEXTVAL FROM dual;  -- 예: 8
+
+-- 현재 board에 저장된 ID 확인
+SELECT id FROM board ORDER BY id;
+
+--실행 후 트리거에서 ctrl + enter
+
+
+
