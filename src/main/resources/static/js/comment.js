@@ -1,3 +1,4 @@
+/*comment.js*/
 document.addEventListener('DOMContentLoaded', () => {
   const boardId = document.getElementById('cmtBoardId').value;
   const $form = document.getElementById('commentForm');

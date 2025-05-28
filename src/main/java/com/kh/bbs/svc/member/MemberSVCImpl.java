@@ -52,4 +52,25 @@ public class MemberSVCImpl implements MemberSVC{
   public boolean existsByEmail(String email) {
     return memberDAO.existsByEmail(email);
   }
+
+  /**
+   * 로그인 처리
+   * 이메일과 비밀번호가 일치하는 회원을 조회
+   */
+  @Override
+  public Optional<Member> login(String email, String password) {
+    // 이메일로 회원 조회
+    Optional<Member> optionalMember = memberDAO.findByEmail(email);
+
+    // 비밀번호 일치 여부 확인
+    if (optionalMember.isPresent()) {
+      Member member = optionalMember.get();
+      if (member.getPassword().equals(password)) {
+        return Optional.of(member);
+      }
+    }
+
+    return Optional.empty();
+  }
+
 }

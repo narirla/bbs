@@ -22,14 +22,28 @@ public class BoardController {
   private final BoardSVC boardSVC;
 
   /**
-   * 게시글 목록 화면 (/board 또는 /board/list)
+   * 게시글 목록 화면 (페이징 포함)
    */
   @GetMapping({"", "/list"})
-  public String list(Model model) {
-    List<Board> boards = boardSVC.findAll();
+  public String list(
+      @RequestParam(value = "page", defaultValue = "1") int page,
+      @RequestParam(value = "size", defaultValue = "10") int size,
+      Model model
+  ) {
+    int startRow = (page - 1) * size + 1;
+    int endRow = page * size;
+
+    List<Board> boards = boardSVC.findAll(startRow, endRow);
+    int totalCount = boardSVC.totalCount();
+    int totalPages = (int) Math.ceil((double) totalCount / size);
+
     model.addAttribute("boards", boards);
-    return "board/all"; // ✅ 목록 템플릿: templates/board/all.html
+    model.addAttribute("currentPage", page);
+    model.addAttribute("totalPages", totalPages);
+    model.addAttribute("size", size); // ✅ 추가
+    return "board/all";
   }
+
 
   /**
    * 게시글 작성 화면

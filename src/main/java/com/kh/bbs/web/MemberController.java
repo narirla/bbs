@@ -91,7 +91,7 @@ public class MemberController {
     //로그인 성공-> 세션 저장
     session.setAttribute("loginMember", optionalMember.get());
 
-    return "redirect:/";
+    return "redirect:/board/list";
   }
 
   //로그아웃 처리

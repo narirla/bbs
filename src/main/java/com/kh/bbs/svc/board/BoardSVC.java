@@ -54,6 +54,19 @@ public interface BoardSVC {
    */
   int deleteIds(List<Long> ids);
 
+  /**
+   * 전체 게시글 수 조회 (페이징용)
+   * @return 게시글 총 수
+   */
+  int totalCount();
+
+  /**
+   * 페이징 처리를 위한 게시글 목록 조회
+   * @param startRow 시작 행 번호
+   * @param endRow 종료 행 번호
+   * @return 게시글 목록
+   */
+  List<Board> findAll(int startRow, int endRow);
 
   // ========== [폼 기반 - SaveForm, DetailForm, UpdateForm] ==========
 

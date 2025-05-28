@@ -107,4 +107,17 @@ public class BoardSVCImpl implements BoardSVC {
   public void deleteBoards(List<Long> ids) {
     boardDAO.deleteByIds(ids);
   }
+
+  // 전체 게시글 수 조회 (페이징용)
+  @Override
+  public int totalCount() {
+    return boardDAO.totalCount();
+  }
+
+  // 페이징 게시글 목록 조회
+  @Override
+  public List<Board> findAll(int startRow, int endRow) {
+    return boardDAO.findAll(startRow, endRow);
+  }
+
 }

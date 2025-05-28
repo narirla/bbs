@@ -35,10 +35,9 @@ public class BoardDAOImpl implements BoardDAO {
   // 게시글 등록
   @Override
   public Long save(Board board) {
-    String sql = """
-    INSERT INTO board (title, content, writer, created_at, updated_at)
-    VALUES (:title, :content, :writer, :createdAt, :updatedAt)
-  """;
+    StringBuffer sql = new StringBuffer();
+    sql.append("INSERT INTO board (title, content, writer, created_at, updated_at) ");
+    sql.append("VALUES (:title, :content, :writer, :createdAt, :updatedAt)");
 
     MapSqlParameterSource param = new MapSqlParameterSource()
         .addValue("title", board.getTitle())
@@ -47,38 +46,32 @@ public class BoardDAOImpl implements BoardDAO {
         .addValue("createdAt", board.getCreatedAt())
         .addValue("updatedAt", board.getUpdatedAt());
 
-    template.update(sql, param);
+    template.update(sql.toString(), param);
 
-    // 트리거를 통해 ID가 들어갔기 때문에 직접 조회해야 함 (선택 사항)
-    // 예: SELECT board_seq.currval FROM dual; (주의: 같은 세션에서만 유효)
-
-    return null; // 또는 ID를 다시 조회해서 리턴 가능
+    return null;
   }
-
 
   // 게시글 목록 조회
   @Override
   public List<Board> findAll() {
-    String sql = """
-      SELECT id, title, content, writer, created_at, updated_at
-      FROM board
-      ORDER BY id DESC
-    """;
+    StringBuffer sql = new StringBuffer();
+    sql.append("SELECT id, title, content, writer, created_at, updated_at ");
+    sql.append("FROM board ");
+    sql.append("ORDER BY id DESC");
 
-    return template.query(sql, boardRowMapper());
+    return template.query(sql.toString(), boardRowMapper());
   }
 
   // 게시글 단건 조회
   @Override
   public Optional<Board> findById(Long id) {
-    String sql = """
-      SELECT id, title, content, writer, created_at, updated_at
-      FROM board
-      WHERE id = :id
-    """;
+    StringBuffer sql = new StringBuffer();
+    sql.append("SELECT id, title, content, writer, created_at, updated_at ");
+    sql.append("FROM board ");
+    sql.append("WHERE id = :id");
 
     MapSqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
-    List<Board> result = template.query(sql, param, boardRowMapper());
+    List<Board> result = template.query(sql.toString(), param, boardRowMapper());
 
     return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
   }
@@ -86,30 +79,29 @@ public class BoardDAOImpl implements BoardDAO {
   // 게시글 단건 삭제
   @Override
   public int deleteById(Long id) {
-    String sql = "DELETE FROM board WHERE id = :id";
+    StringBuffer sql = new StringBuffer("DELETE FROM board WHERE id = :id");
     MapSqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
-    return template.update(sql, param);
+    return template.update(sql.toString(), param);
   }
 
   // 게시글 여러 건 삭제
   @Override
   public int deleteByIds(List<Long> ids) {
-    String sql = "DELETE FROM board WHERE id IN (:ids)";
+    StringBuffer sql = new StringBuffer("DELETE FROM board WHERE id IN (:ids)");
     MapSqlParameterSource param = new MapSqlParameterSource().addValue("ids", ids);
-    return template.update(sql, param);
+    return template.update(sql.toString(), param);
   }
 
   // 게시글 수정
   @Override
   public int updateById(Long boardId, Board board) {
-    String sql = """
-      UPDATE board
-      SET title = :title,
-          content = :content,
-          writer = :writer,
-          updated_at = :updatedAt
-      WHERE id = :boardId
-    """;
+    StringBuffer sql = new StringBuffer();
+    sql.append("UPDATE board SET ");
+    sql.append("title = :title, ");
+    sql.append("content = :content, ");
+    sql.append("writer = :writer, ");
+    sql.append("updated_at = :updatedAt ");
+    sql.append("WHERE id = :boardId");
 
     MapSqlParameterSource param = new MapSqlParameterSource()
         .addValue("title", board.getTitle())
@@ -118,6 +110,31 @@ public class BoardDAOImpl implements BoardDAO {
         .addValue("updatedAt", board.getUpdatedAt())
         .addValue("boardId", boardId);
 
-    return template.update(sql, param);
+    return template.update(sql.toString(), param);
   }
+
+  // 페이징 처리를 위한 게시글 목록 조회
+  @Override
+  public List<Board> findAll(int startRow, int endRow) {
+    StringBuffer sql = new StringBuffer();
+    sql.append("SELECT * FROM (");
+    sql.append(" SELECT ROWNUM rn, t.* FROM (");
+    sql.append(" SELECT id, title, content, writer, created_at, updated_at FROM board ORDER BY id DESC");
+    sql.append(") t WHERE ROWNUM <= :endRow");
+    sql.append(") WHERE rn >= :startRow");
+
+    MapSqlParameterSource params = new MapSqlParameterSource()
+        .addValue("startRow", startRow)
+        .addValue("endRow", endRow);
+
+    return template.query(sql.toString(), params, boardRowMapper());
+  }
+
+  // 전체 게시글 수 반환
+  @Override
+  public int totalCount() {
+    StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM board");
+    return template.queryForObject(sql.toString(), new MapSqlParameterSource(), Integer.class);
+  }
+
 }

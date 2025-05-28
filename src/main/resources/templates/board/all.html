@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,19 @@
   <link rel="stylesheet" th:href="@{/css/all.css}">
 </head>
 <body>
-  <!-- ✅ 로그인 사용자 정보 + 로그아웃 -->
-  <div class="welcome-box" th:if="${session.loginMember != null}">
+
+  <!-- 상단 버튼 -->
+  <div class="top-bar" th:if="${session.loginMember != null}">
+    <div class="top-actions">
+      <a th:href="@{/member/logout}" class="btn">🔓 로그아웃</a>
+      <a th:href="@{/}" class="btn">🏠 홈</a>
+    </div>
+  </div>
+
+  <!-- 환영 메시지 박스 -->
+  <div class="welcome-msg-box" th:if="${session.loginMember != null}">
     <p>
       <strong th:text="${session.loginMember.nickname}">닉네임</strong>님 환영합니다!
-      <a th:href="@{/member/logout}" class="logout-center-btn">로그아웃</a>
-      <a href="/" class="logout-center-btn">🏠 </a>  <!-- 홈 추가 -->
     </p>
   </div>
 
@@ -21,10 +29,15 @@
     <h3> 게시글 목록</h3>
 
     <form id="frm" th:action="@{/board/delete}" method="post">
+
+      <!-- 🔽 페이징 정보 유지 -->
+      <input type="hidden" name="page" th:value="${currentPage}" />
+      <input type="hidden" name="size" th:value="${size}" />
+
       <table>
         <thead>
         <tr>
-          <th>선택</th>
+          <th><input type="checkbox" id="checkAll"></th>
           <th>ID</th>
           <th>제목</th>
           <th>작성자</th>
@@ -32,6 +45,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${#lists.isEmpty(boards)}">
+          <td colspan="5" style="text-align:center;">등록된 게시글이 없습니다.</td>
+        </tr>
         <tr th:each="board : ${boards}">
           <td><input type="checkbox" name="ids" th:value="${board.id}"></td>
           <td th:text="${board.id}">1</td>
@@ -43,13 +59,37 @@
         </tr>
         </tbody>
       </table>
-    </form>
 
-    <div class="button-group">
-      <button type="button" id="btnAdd">등록</button>
-      <button type="button" id="btnEdit">수정</button>
-      <button type="button" id="btnDel">삭제</button>
-    </div>
+      <div class="button-group">
+        <button type="button" id="btnAdd">등록</button>
+        <button type="button" id="btnEdit">수정</button>
+        <button type="submit" id="btnDel">삭제</button>
+      </div>
+
+      <!-- 페이징 UI -->
+      <div class="pagination">
+        <ul>
+          <li th:if="${currentPage > 1}">
+            <a th:href="@{'/board?page=1&size=' + ${size}}">처음</a>
+          </li>
+          <li th:if="${currentPage > 1}">
+            <a th:href="@{'/board?page=' + (${currentPage} - 1) + '&size=' + ${size}}">이전</a>
+          </li>
+
+          <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+              th:classappend="${i} == ${currentPage} ? 'active'">
+            <a th:href="@{'/board?page=' + ${i} + '&size=' + ${size}}" th:text="${i}"></a>
+          </li>
+
+          <li th:if="${currentPage < totalPages}">
+            <a th:href="@{'/board?page=' + (${currentPage} + 1) + '&size=' + ${size}}">다음</a>
+          </li>
+          <li th:if="${currentPage < totalPages}">
+            <a th:href="@{'/board?page=' + ${totalPages} + '&size=' + ${size}}">끝</a>
+          </li>
+        </ul>
+      </div>
+    </form>
   </div>
 
   <script type="module" th:src="@{/js/all.js}"></script>

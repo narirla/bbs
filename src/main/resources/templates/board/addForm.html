@@ -12,6 +12,7 @@
     <div class="form-box">
       <h3 class="form-title">게시글 작성</h3>
       <form id="frm" th:action="@{/board/create}" method="post" th:object="${saveForm}">
+
         <!-- 글로벌 오류 -->
         <div th:if="${#fields.hasGlobalErrors()}">
           <p class="field-err" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
@@ -20,22 +21,28 @@
         <!-- 제목 -->
         <div class="input-group">
           <label for="title">제목</label>
-          <input type="text" id="title" th:field="*{title}">
-          <span class="field-err" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+          <div class="input-wrapper">
+            <input type="text" id="title" th:field="*{title}">
+            <div class="field-err" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+          </div>
         </div>
 
         <!-- 작성자 -->
         <div class="input-group">
           <label for="writer">작성자</label>
-          <input type="text" id="writer" th:field="*{writer}">
-          <span class="field-err" th:if="${#fields.hasErrors('writer')}" th:errors="*{writer}"></span>
+          <div class="input-wrapper">
+            <input type="text" id="writer" th:field="*{writer}">
+            <div class="field-err" th:if="${#fields.hasErrors('writer')}" th:errors="*{writer}"></div>
+          </div>
         </div>
 
         <!-- 내용 -->
         <div class="input-group">
           <label for="content">내용</label>
-          <textarea id="content" rows="5" th:field="*{content}"></textarea>
-          <span class="field-err" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+          <div class="input-wrapper">
+            <textarea id="content" rows="5" th:field="*{content}"></textarea>
+            <div class="field-err" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+          </div>
         </div>
 
         <!-- 버튼 -->

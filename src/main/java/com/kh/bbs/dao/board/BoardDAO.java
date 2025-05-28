@@ -13,6 +13,9 @@ public interface BoardDAO {
   //게시글 목록 조회
   List<Board> findAll();
 
+  //게시글 페이징 목록 조회
+  List<Board> findAll(int startRow, int endRow);
+
   //게시글 조회
   Optional<Board> findById(Long id);
 
@@ -24,5 +27,8 @@ public interface BoardDAO {
 
   //게시글 수정
   int updateById(Long boardId, Board board);
-  
+
+  // 전체 게시글 수
+  int totalCount();
+
 }
