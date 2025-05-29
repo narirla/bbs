@@ -1,5 +1,4 @@
-// index.js
-
+// index.js//
 document.addEventListener("DOMContentLoaded", () => {
   const nicknameEl = document.querySelector(".main-container strong");
   const loginLink = document.querySelector("a[href*='/login']");
