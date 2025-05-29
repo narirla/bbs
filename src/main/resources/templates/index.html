@@ -1,169 +1,35 @@
+
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>홈</title>
-    <link rel="stylesheet" th:href="@{/css/index.css}" />
-    <style>
-        body {
-          margin: 0;
-          font-family: Arial, sans-serif;
-        }
-
-        /* 상단 헤더 */
-        .uppermost {
-          background-color: #2c3e50;
-          color: white;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem 2rem;
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .header-title {
-          font-size: 1.5rem;
-          font-weight: bold;
-          display: flex;
-          align-items: center;
-        }
-
-        .header-actions a {
-          color: white;
-          margin-left: 1rem;
-          text-decoration: none;
-          font-size: 0.95rem;
-        }
-
-        /* 카테고리 메뉴(nav) */
-        nav.category-menu {
-          background-color: #f0f0f0;
-          border-top: 1px solid #ddd;
-          border-bottom: 1px solid #ddd;
-          width: 100%;
-        }
-
-        nav.category-menu ul {
-          display: flex;
-          justify-content: center;
-          margin: 0;
-          padding: 0;
-          list-style: none;
-        }
-
-        nav.category-menu li {
-          padding: 1rem 2rem;
-          cursor: pointer;
-          font-weight: bold;
-          font-size: 1rem;
-        }
-
-        nav.category-menu li:hover {
-          background-color: #ddd;
-        }
-
-        nav.category-menu a {
-          text-decoration: none;
-          color: inherit;
-        }
-
-        /* 메인 콘텐츠 영역 */
-        main.fullscreen-container {
-          width: 100%;
-          min-height: calc(100vh - 120px); /* 헤더 + nav 높이 제외 */
-          background-color: #f9f9f9;
-          padding: 2rem 1rem;
-          box-sizing: border-box;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .home-card {
-          background-color: #fff;
-          padding: 40px;
-          border-radius: 16px;
-          box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-          text-align: center;
-          max-width: 600px;
-          width: 100%;
-        }
-
-        .button-group {
-          margin-top: 24px;
-        }
-
-        .cool-button {
-          display: inline-block;
-          margin: 0 10px;
-          padding: 10px 20px;
-          background-color: #3498db;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          text-decoration: none;
-          font-size: 1rem;
-        }
-
-        .cool-button.outline {
-          background-color: transparent;
-          border: 2px solid #3498db;
-          color: #3498db;
-        }
-
-        .cool-button:hover {
-          opacity: 0.85;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
+    <div class="fullscreen-container">
+        <div class="main-card home-card">
+            <h2><span class="highlight">게시판</span></h2>
 
-    <!-- 🔹 상단 헤더 -->
-    <div class="uppermost">
-        <div class="header-title">📌 게시판</div>
-        <div class="header-actions">
-            <div th:if="${session.loginMember == null}">
-                <a href="/member/login">로그인</a>
-                <a href="/member/join">회원가입</a>
-            </div>
-            <div th:if="${session.loginMember != null}">
-                <a href="/member/logout">로그아웃</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 🔹 카테고리 메뉴 -->
-    <nav class="category-menu">
-        <ul>
-            <li><a href="/">전체메뉴</a></li>
-            <li><a href="/board/list">게시판</a></li>
-        </ul>
-    </nav>
-
-    <!-- 🔹 메인 콘텐츠 -->
-    <main class="fullscreen-container">
-        <section class="home-card">
-            <h2>📌 게시판에 오신 것을 환영합니다</h2>
-
+            <!-- 로그인 상태 -->
             <div th:if="${session.loginMember != null}">
                 <p><strong th:text="${session.loginMember.nickname}">닉네임</strong>님 환영합니다!</p>
                 <div class="button-group">
-                    <a th:href="@{/board/list}" class="cool-button">게시글 목록</a>
-                    <a th:href="@{/member/logout}" class="cool-button outline">로그아웃</a>
+                    <a th:href="@{/board/list}" class="cool-button"> 게시글 목록</a>
+                    <a th:href="@{/member/logout}" class="cool-button outline"> 로그아웃</a>
                 </div>
             </div>
 
+            <!-- 비로그인 상태 -->
             <div th:unless="${session.loginMember != null}">
-                <p>로그인 후 이용해 주세요.</p>
+                <p>환영합니다. 아래 버튼을 통해 이용해 주세요.</p>
                 <div class="button-group">
-                    <a th:href="@{/member/login}" class="cool-button">로그인</a>
-                    <a th:href="@{/member/join}" class="cool-button outline">회원가입</a>
+                    <a href="/member/login" class="cool-button"> 로그인</a>
+                    <a href="/member/join" class="cool-button outline"> 회원가입</a>
                 </div>
             </div>
-        </section>
-    </main>
-
+        </div>
+    </div>
 </body>
 </html>

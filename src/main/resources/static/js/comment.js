@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const $pagination = document.getElementById('commentPagination');
 
   let currentPage = 1;
-  const commentsPerPage = 10;
 
   // 댓글 목록 가져오기
   async function loadComments(page = 1) {
@@ -15,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(`/api/comments/board/${boardId}/pages?page=${page}`);
       if (!res.ok) throw new Error('댓글 조회 실패');
 
-      const { comments, totalPages } = await res.json();  // 서버는 comments, totalPages를 포함해야 함
+      const { comments, totalPages } = await res.json();
       currentPage = page;
       $list.innerHTML = '';
       $pagination.innerHTML = '';
@@ -25,20 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      comments.forEach((comment, index) => {
+      comments.forEach(comment => {
         const div = document.createElement('div');
         div.classList.add('comment-item');
 
         const p = document.createElement('p');
         p.innerHTML = `<strong>${comment.nickname}</strong>: ${comment.content}`;
 
-
         const small = document.createElement('small');
         small.innerText = comment.createdAt?.replace('T', ' ').substring(0, 16) || '';
 
         div.appendChild(p);
         div.appendChild(small);
-
 
         if (comment.mine) {
           const editBtn = document.createElement('button');
@@ -57,13 +54,51 @@ document.addEventListener('DOMContentLoaded', () => {
         $list.appendChild(div);
       });
 
-      // 페이징 버튼 생성
-      for (let i = 1; i <= totalPages; i++) {
+      // ✅ 5페이지 단위 페이징 + 처음/끝 버튼 포함
+      const pageGroupSize = 5;
+      const currentGroup = Math.ceil(page / pageGroupSize);
+      const startPage = (currentGroup - 1) * pageGroupSize + 1;
+      const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+      // ≪ 처음
+      if (page > 1) {
+        const firstBtn = document.createElement('button');
+        firstBtn.innerText = '≪';
+        firstBtn.addEventListener('click', () => loadComments(1));
+        $pagination.appendChild(firstBtn);
+      }
+
+      // ◀ 이전 그룹
+      if (startPage > 1) {
+        const prevBtn = document.createElement('button');
+        prevBtn.innerText = '◀';
+        prevBtn.addEventListener('click', () => loadComments(startPage - 1));
+        $pagination.appendChild(prevBtn);
+      }
+
+      // 페이지 번호들
+      for (let i = startPage; i <= endPage; i++) {
         const btn = document.createElement('button');
         btn.innerText = i;
-        if (i === page) btn.disabled = true;
+        btn.disabled = i === page;
         btn.addEventListener('click', () => loadComments(i));
         $pagination.appendChild(btn);
+      }
+
+      // ▶ 다음 그룹
+      if (endPage < totalPages) {
+        const nextBtn = document.createElement('button');
+        nextBtn.innerText = '▶';
+        nextBtn.addEventListener('click', () => loadComments(endPage + 1));
+        $pagination.appendChild(nextBtn);
+      }
+
+      // ≫ 끝
+      if (page < totalPages) {
+        const lastBtn = document.createElement('button');
+        lastBtn.innerText = '≫';
+        lastBtn.addEventListener('click', () => loadComments(totalPages));
+        $pagination.appendChild(lastBtn);
       }
 
     } catch (err) {
@@ -91,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (res.ok) {
         $content.value = '';
-        loadComments(1);  // 등록 후 1페이지로 이동
+        loadComments(1);  // 등록 후 첫 페이지 로드
       } else if (res.status === 401) {
         alert('로그인이 필요합니다!');
         location.href = '/login';
@@ -150,6 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 페이지 로드시 댓글 목록 조회
+  // 초기 댓글 목록 로드
   loadComments();
 });

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,23 @@ class BoardDAOImplTest {
     log.info("게시글 번호={}", id);
     Assertions.assertThat(id).isNotNull();
   }
+
+  @Test
+  @DisplayName("게시글 등록 (100건)")
+  void saveBoards() {
+    for (int i = 1; i <= 100; i++) {
+      Board board = new Board();
+      board.setTitle("테스트_" + i);
+      board.setContent("테스트 내용_" + i);
+      board.setWriter("테스터");
+      board.setCreatedAt(new Date());
+      board.setUpdatedAt(new Date());
+
+      Long boardId = boardDAO.save(board);
+    }
+  }
+
+
 
   @Test
   @DisplayName("게시글 목록")

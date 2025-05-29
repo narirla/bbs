@@ -30,19 +30,38 @@ public class BoardController {
       @RequestParam(value = "size", defaultValue = "10") int size,
       Model model
   ) {
+    // 1. 시작/끝 행 계산
     int startRow = (page - 1) * size + 1;
     int endRow = page * size;
 
+    // 2. 게시글 조회
     List<Board> boards = boardSVC.findAll(startRow, endRow);
     int totalCount = boardSVC.totalCount();
     int totalPages = (int) Math.ceil((double) totalCount / size);
+    if (totalPages == 0) totalPages = 1;
 
+    // 3. 10페이지 단위 페이징 계산
+    int pageGroupSize = 10;
+    int currentGroup = (page - 1) / pageGroupSize;
+    int startPage = currentGroup * pageGroupSize + 1;
+    int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+    boolean hasPrev = startPage > 1;
+    boolean hasNext = endPage < totalPages;
+
+    // 4. 모델에 담기
     model.addAttribute("boards", boards);
     model.addAttribute("currentPage", page);
     model.addAttribute("totalPages", totalPages);
-    model.addAttribute("size", size); // ✅ 추가
+    model.addAttribute("size", size);
+
+    model.addAttribute("startPage", startPage);
+    model.addAttribute("endPage", endPage);
+    model.addAttribute("hasPrev", hasPrev);
+    model.addAttribute("hasNext", hasNext);
+
     return "board/all";
   }
+
 
 
   /**

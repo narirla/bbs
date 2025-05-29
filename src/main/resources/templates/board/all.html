@@ -9,7 +9,6 @@
   <link rel="stylesheet" th:href="@{/css/all.css}">
 </head>
 <body>
-
   <!-- 상단 버튼 -->
   <div class="top-bar" th:if="${session.loginMember != null}">
     <div class="top-actions">
@@ -38,16 +37,21 @@
         <thead>
         <tr>
           <th><input type="checkbox" id="checkAll"></th>
-          <th>ID</th>
+          <th>번호</th>
           <th>제목</th>
           <th>작성자</th>
           <th>작성일</th>
         </tr>
         </thead>
         <tbody>
+        <!-- ✅ 게시글이 없을 경우 -->
         <tr th:if="${#lists.isEmpty(boards)}">
-          <td colspan="5" style="text-align:center;">등록된 게시글이 없습니다.</td>
+          <td colspan="5" style="text-align:center; padding: 40px 0; font-size: 18px; color: #999;">
+            게시글이 없습니다.
+          </td>
         </tr>
+
+        <!-- ✅ 게시글이 있을 경우 -->
         <tr th:each="board : ${boards}">
           <td><input type="checkbox" name="ids" th:value="${board.id}"></td>
           <td th:text="${board.id}">1</td>
@@ -66,26 +70,33 @@
         <button type="submit" id="btnDel">삭제</button>
       </div>
 
-      <!-- 페이징 UI -->
+      <!-- ✅ 10페이지 단위 페이징 UI + 처음/끝 버튼 포함 -->
       <div class="pagination">
         <ul>
+          <!-- ≪ 처음 -->
           <li th:if="${currentPage > 1}">
-            <a th:href="@{'/board?page=1&size=' + ${size}}">처음</a>
-          </li>
-          <li th:if="${currentPage > 1}">
-            <a th:href="@{'/board?page=' + (${currentPage} - 1) + '&size=' + ${size}}">이전</a>
+            <a th:href="@{'/board?page=1&size=' + ${size}}">≪</a>
           </li>
 
-          <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+          <!-- ◀ 이전 그룹 -->
+          <li th:if="${hasPrev}">
+            <a th:href="@{'/board?page=' + ${startPage - 1} + '&size=' + ${size}}">◀</a>
+          </li>
+
+          <!-- 페이지 번호 -->
+          <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
               th:classappend="${i} == ${currentPage} ? 'active'">
-            <a th:href="@{'/board?page=' + ${i} + '&size=' + ${size}}" th:text="${i}"></a>
+            <a th:href="@{'/board?page=' + ${i} + '&size=' + ${size}}" th:text="${i}">1</a>
           </li>
 
-          <li th:if="${currentPage < totalPages}">
-            <a th:href="@{'/board?page=' + (${currentPage} + 1) + '&size=' + ${size}}">다음</a>
+          <!-- ▶ 다음 그룹 -->
+          <li th:if="${hasNext}">
+            <a th:href="@{'/board?page=' + ${endPage + 1} + '&size=' + ${size}}">▶</a>
           </li>
+
+          <!-- ≫ 끝 -->
           <li th:if="${currentPage < totalPages}">
-            <a th:href="@{'/board?page=' + ${totalPages} + '&size=' + ${size}}">끝</a>
+            <a th:href="@{'/board?page=' + ${totalPages} + '&size=' + ${size}}">≫</a>
           </li>
         </ul>
       </div>
